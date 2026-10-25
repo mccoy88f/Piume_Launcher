@@ -15,6 +15,11 @@ Put changes that are not released under `## Unreleased`. Rename that heading to 
 
 ## Unreleased
 
+## 3.1.1
+
+- **Piume settings → Updates** has a new option, **Receive betas**. Turn it on to get the beta versions too. A beta has new functions that are not fully tested yet.
+- Piume now knows that a beta comes before its final version. After a beta, Piume offers the final version when it is available.
+
 ## 3.1
 
 - The settings section **Continue Watching** is now called **Content**.

@@ -69,4 +69,6 @@ jobs:
           cp app/build/outputs/apk/release/app-release.apk Piume.apk
           # This version's CHANGELOG section, up to the next heading of any level.
           awk -v v="## $VER" '$0 == v {on = 1; next} on && /^#/ {exit} on' CHANGELOG.md > notes.md
-          gh release create "v$VER" Piume.apk --title "Piume $VER" --notes-file notes.md --target "$GITHUB_SHA"
+          # A beta ("4.0.0-beta.1") is a pre-release: the in-app updater reads releases/latest, which leaves those out.
+          pre=""; case "$VER" in *-*) pre="--prerelease";; esac
+          gh release create "v$VER" Piume.apk --title "Piume $VER" --notes-file notes.md --target "$GITHUB_SHA" $pre

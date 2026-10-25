@@ -266,6 +266,7 @@
     <string name="whats_new_title">Novedades de la versión %1$s</string>
     <string name="check_updates">Buscar actualizaciones</string>
     <string name="install_update">Instalar %1$s</string>
+    <string name="setting_updates_beta">Recibir las betas</string>
     <string name="weather_units">Unidades del tiempo</string>
     <string name="weather_location">Ubicación del tiempo</string>
     <string name="automatic">Automática</string>

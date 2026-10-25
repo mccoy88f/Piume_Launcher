@@ -10,15 +10,28 @@ import android.os.Build
 /** The action MainActivity gets an install's outcome under (from InstallResult). */
 internal const val UPDATE_STATUS = "dev.piume.UPDATE_STATUS"
 
-/** "1.10" > "1.9" > "1.2.1" > "1.2": compared number by number, missing parts count as 0. */
+/**
+ * "1.10" > "1.9" > "1.2.1" > "1.2": compared number by number, missing parts count as 0. A beta comes before its
+ * release, and betas in their order: "4.0" > "4.0.0-beta.2" > "4.0.0-beta.1" > "3.1".
+ */
 internal fun newerVersion(a: String, b: String): Boolean {
-    val x = a.split('.').map { it.toIntOrNull() ?: 0 }
-    val y = b.split('.').map { it.toIntOrNull() ?: 0 }
-    for (i in 0 until maxOf(x.size, y.size)) {
-        val d = x.getOrElse(i) { 0 } - y.getOrElse(i) { 0 }
-        if (d != 0) return d > 0
+    fun numbers(s: String) = s.split('.').map { it.filter(Char::isDigit).toIntOrNull() ?: 0 }
+    fun compare(x: List<Int>, y: List<Int>): Int {
+        for (i in 0 until maxOf(x.size, y.size)) {
+            val d = x.getOrElse(i) { 0 } - y.getOrElse(i) { 0 }
+            if (d != 0) return d
+        }
+        return 0
     }
-    return false
+    val d = compare(numbers(a.substringBefore('-')), numbers(b.substringBefore('-')))
+    if (d != 0) return d > 0
+    val (pa, pb) = a.substringAfter('-', "") to b.substringAfter('-', "")
+    return when {
+        pa == pb -> false
+        pa.isEmpty() -> true // the release, after its betas
+        pb.isEmpty() -> false
+        else -> compare(numbers(pa), numbers(pb)) > 0
+    }
 }
 
 /**
@@ -27,8 +40,19 @@ internal fun newerVersion(a: String, b: String): Boolean {
  * update it. Network: call both off the UI thread.
  */
 internal object Updater {
-    /** The newest release's version ("1.4"), from its tag ("v1.4"). Throws when GitHub can't be asked. */
-    fun latest(repo: String): String = Http.json("https://api.github.com/repos/$repo/releases/latest").getString("tag_name").removePrefix("v")
+    /**
+     * The newest release's version ("1.4"), from its tag ("v1.4"); with [beta], the newest of the betas too
+     * (pre-releases, which releases/latest leaves out). Throws when GitHub can't be asked.
+     */
+    fun latest(repo: String, beta: Boolean = false): String {
+        if (!beta) return Http.json("https://api.github.com/repos/$repo/releases/latest").getString("tag_name").removePrefix("v")
+        val list = org.json.JSONArray(Http.text("https://api.github.com/repos/$repo/releases?per_page=20", mapOf("Accept" to "application/json")))
+        return newest((0 until list.length()).map { list.getJSONObject(it) }.filter { !it.optBoolean("draft") }.map { it.getString("tag_name").removePrefix("v") })
+            ?: throw java.io.IOException("no releases")
+    }
+
+    /** The newest of [versions], or null when there are none. */
+    internal fun newest(versions: List<String>): String? = versions.fold(null as String?) { best, v -> if (best == null || newerVersion(v, best)) v else best }
 
     /** Downloads release [ver] and hands it to Android, which reports to InstallResult. Throws if the download fails. */
     fun install(context: Context, repo: String, ver: String) {

@@ -266,6 +266,7 @@
     <string name="whats_new_title">What\'s new in %1$s</string>
     <string name="check_updates">Check for updates</string>
     <string name="install_update">Install %1$s</string>
+    <string name="setting_updates_beta">Receive betas</string>
     <string name="weather_units">Weather units</string>
     <string name="weather_location">Weather location</string>
     <string name="automatic">Automatic</string>

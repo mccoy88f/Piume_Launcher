@@ -78,5 +78,6 @@ internal object K {
     const val UPD_VER = "upd_ver"
     const val UPD_TIME = "upd_time"
     const val UPD_TOLD = "upd_told"
+    const val UPD_BETA = "upd_beta" // betas (pre-releases) are offered too
     const val SEEN_NOTES = "seen_notes"
 }

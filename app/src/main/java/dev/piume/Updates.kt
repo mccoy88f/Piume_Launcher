@@ -19,6 +19,9 @@ import dev.piume.MainActivity.Companion.UPDATE_ROW
 
 internal fun MainActivity.myVersion() = packageManager.getPackageInfo(packageName, 0).versionName.orEmpty()
 
+/** Whether betas are offered too (Updates → Receive betas): versions with new things that aren't fully tried yet. */
+internal fun MainActivity.betaUpdates() = prefs.getBoolean(K.UPD_BETA, false)
+
 /** The newer version a check found, if any (null again once it's installed). */
 internal fun MainActivity.availableUpdate() = prefs.getString(K.UPD_VER, null)?.takeIf { newerVersion(it, myVersion()) }
 
@@ -37,7 +40,7 @@ internal fun MainActivity.checkUpdate(force: Boolean) {
     }
     netIo.execute {
         val latest = try {
-            Updater.latest(REPO)
+            Updater.latest(REPO, beta = betaUpdates())
         } catch (e: Exception) {
             warn("update check failed ($e)")
             null
@@ -70,7 +73,14 @@ internal fun MainActivity.showUpdates() {
         ver != null -> page(getString(R.string.install_update, ver)) { installUpdate(ver) }
         else -> page(getString(R.string.check_updates)) { checkUpdate(force = true) }
     }
-    showPage(getString(R.string.whats_new_title, myVersion()), listOf(topRow), back = { renderSettings(UPDATE_ROW) })
+    val betaRow = page(getString(R.string.setting_updates_beta), toggle(betaUpdates())) {
+        // The other channel's newest version, checked at once: what was found before may not be in it.
+        prefs.edit().putBoolean(K.UPD_BETA, !betaUpdates()).remove(K.UPD_VER).remove(K.UPD_TIME).apply()
+        updateBadge()
+        checkUpdate(force = true)
+        showUpdates()
+    }
+    showPage(getString(R.string.whats_new_title, myVersion()), listOf(topRow, betaRow), back = { renderSettings(UPDATE_ROW) })
     // Focusable, lit on focus, so Down walks through notes longer than the panel and it scrolls along.
     getString(R.string.whats_new).split('\n').forEach {
         settingsList.addView(label("", 13f).apply {
