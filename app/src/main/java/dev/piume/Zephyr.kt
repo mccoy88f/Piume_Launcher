@@ -20,6 +20,9 @@ import org.json.JSONObject
 internal const val ZEPHYR_PKG = "link.mccoy88f.zephyr"
 internal const val ZEPHYR_REPO = "mccoy88f/Zephyr_TV"
 
+/** The SHA-256 of Zephyr TV's signing certificate (its own key, not Piume's): only that app gets Piume's things. */
+internal const val ZEPHYR_CERT = "ad29f20fb27f8f843683f71296f7dc7ac460a30806fcbc12484d430fcfeba6b1"
+
 /** Settings Zephyr TV doesn't take: Piume's updates and its Home setup (Zephyr TV sets itself up as Home). */
 internal val NOT_HANDED = setOf(K.HOME_OFF, K.SETUP_SHOWN, K.REOPEN_ROW, K.UPD_VER, K.UPD_TIME, K.UPD_TOLD, K.SEEN_NOTES, K.ZEPHYR_TOLD)
 
@@ -29,7 +32,7 @@ internal val HANDED_FILES = listOf("vod_progress.json", "vod_watched.json", "tra
 /**
  * What Piume hands Zephyr TV, as one JSON document read through content://dev.piume.migration/export: its settings
  * (each with its type) and its users' files. Only Zephyr TV may read it: the app asking must be it, signed with
- * Piume's own key (the same developer's), or it's refused. Written into a pipe as it's read: a long history doesn't
+ * Zephyr TV's key (its certificate, ZEPHYR_CERT), or it's refused. Written into a pipe as it's read: a long history doesn't
  * have to fit in one Binder call.
  */
 class MigrationProvider : ContentProvider() {
@@ -38,9 +41,7 @@ class MigrationProvider : ContentProvider() {
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor {
         val context = context ?: throw SecurityException("no context")
         val caller = callingPackage
-        if (caller != ZEPHYR_PKG || context.packageManager.checkSignatures(caller, context.packageName) != PackageManager.SIGNATURE_MATCH) {
-            throw SecurityException("only Zephyr TV, signed as Piume, may read this")
-        }
+        if (caller != ZEPHYR_PKG || !context.signedBy(caller, ZEPHYR_CERT)) throw SecurityException("only Zephyr TV, signed with its key, may read this")
         if (uri.lastPathSegment != "export" || mode != "r") throw IllegalArgumentException("only export, to read")
         val (read, write) = ParcelFileDescriptor.createPipe()
         Thread {
@@ -81,6 +82,22 @@ class MigrationProvider : ContentProvider() {
     override fun delete(uri: Uri, selection: String?, args: Array<out String>?) = 0
     override fun update(uri: Uri, values: ContentValues?, selection: String?, args: Array<out String>?) = 0
 }
+
+/**
+ * Whether [pkg] is installed and signed with the certificate whose SHA-256 is [sha256] (hex): an app told by its
+ * key, not only its name (anyone can name an app anything).
+ */
+internal fun android.content.Context.signedBy(pkg: String, sha256: String): Boolean = runCatching {
+    val pm = packageManager
+    val certs = if (android.os.Build.VERSION.SDK_INT >= 28) {
+        val info = pm.getPackageInfo(pkg, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo ?: return false
+        if (info.hasMultipleSigners()) info.apkContentsSigners else info.signingCertificateHistory
+    } else {
+        @Suppress("DEPRECATION")
+        pm.getPackageInfo(pkg, PackageManager.GET_SIGNATURES).signatures
+    } ?: return false
+    certs.any { s -> java.security.MessageDigest.getInstance("SHA-256").digest(s.toByteArray()).joinToString("") { "%02x".format(it) } == sha256 }
+}.getOrDefault(false)
 
 /** Whether Zephyr TV is installed. */
 internal fun MainActivity.zephyrInstalled() = runCatching { packageManager.getPackageInfo(ZEPHYR_PKG, 0) }.isSuccess
