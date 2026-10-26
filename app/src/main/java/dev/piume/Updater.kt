@@ -54,6 +54,26 @@ internal object Updater {
     /** The newest of [versions], or null when there are none. */
     internal fun newest(versions: List<String>): String? = versions.fold(null as String?) { best, v -> if (best == null || newerVersion(v, best)) v else best }
 
+    /**
+     * Downloads the app at [url] (another app: Zephyr TV, see Zephyr) and hands it to Android, which asks the user
+     * and reports to InstallResult. Throws if the download fails.
+     */
+    fun installOther(context: Context, url: String) {
+        val installer = context.packageManager.packageInstaller
+        val id = installer.createSession(PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL))
+        installer.openSession(id).use { session ->
+            try {
+                Http.open(url).use { input -> session.openWrite("app.apk", 0, -1).use { out -> input.copyTo(out); session.fsync(out) } }
+            } catch (e: Exception) {
+                session.abandon()
+                throw e
+            }
+            val done = PendingIntent.getBroadcast(context, 1, Intent(context, InstallResult::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+            session.commit(done.intentSender)
+        }
+    }
+
     /** Downloads release [ver] and hands it to Android, which reports to InstallResult. Throws if the download fails. */
     fun install(context: Context, repo: String, ver: String) {
         val installer = context.packageManager.packageInstaller

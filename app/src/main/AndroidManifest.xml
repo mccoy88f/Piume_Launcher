@@ -32,6 +32,8 @@
         <intent>
             <action android:name="android.speech.RecognitionService" />
         </intent>
+        <!-- Zephyr TV, what Piume became: whether it's installed (see Zephyr). -->
+        <package android:name="link.mccoy88f.zephyr" />
         <!-- Sony TVs: which external inputs have a device connected (see connectedInputs). -->
         <provider android:authorities="com.sony.dtv.tvinput.external.provider" />
     </queries>
@@ -74,6 +76,13 @@
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" />
+
+        <!-- What Piume hands Zephyr TV on its first start: only Zephyr TV, signed with Piume's key, may read it
+             (MigrationProvider checks; exported only for that). -->
+        <provider
+            android:name=".MigrationProvider"
+            android:authorities="dev.piume.migration"
+            android:exported="true" />
 
         <!-- The update installer reports here; not exported, so only Android (via Piume's PendingIntent) can. -->
         <receiver android:name=".InstallResult" android:exported="false" />

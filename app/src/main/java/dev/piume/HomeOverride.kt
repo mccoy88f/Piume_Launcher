@@ -25,6 +25,7 @@ class HomeOverride : AccessibilityService() {
 
     override fun onKeyEvent(e: KeyEvent): Boolean {
         if (e.keyCode != KeyEvent.KEYCODE_HOME) return false
+        if (zephyrHome()) return false // Zephyr TV's own service takes it now (see Zephyr)
         // Decided on release, by how long it was held: this TV's remote doesn't reliably send key repeats.
         if (e.action == KeyEvent.ACTION_UP && !e.isCanceled) {
             if (e.eventTime - e.downTime < LONG_PRESS_MS) goHome(cover = false) else performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS)

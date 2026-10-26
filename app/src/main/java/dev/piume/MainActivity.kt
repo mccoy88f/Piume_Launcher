@@ -327,6 +327,7 @@ class MainActivity : Activity() {
         ui.post(wallpaperTick)
         lastInput = SystemClock.elapsedRealtime() // back from an app: someone is here
         syncTraktNow() // what the user watched elsewhere, now and then
+        zephyrNow() // Piume is now Zephyr TV: said once a day until it's installed
         spotlightIdle = false
         restartSpotlightTick()
         // Gallery chosen but its paintings missing (updated from a version that bundled them): fetch them.

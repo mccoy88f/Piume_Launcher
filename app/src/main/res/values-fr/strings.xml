@@ -512,4 +512,12 @@
     <string name="trakt_refused">Trakt n\'a pas accepté la connexion. Rouvrez cette page et réessayez.</string>
     <string name="title_hold_hint">Maintenez OK sur un épisode pour le marquer comme vu ou non vu.</string>
     <string name="search_filter_clear">Effacer les filtres</string>
+    <!-- Piume is now Zephyr TV -->
+    <string name="zephyr_title">Piume s\'appelle maintenant Zephyr TV</string>
+    <string name="zephyr_intro">Piume a un nouveau nom et une nouvelle maison : Zephyr TV. Piume ne reçoit plus de mises à jour. Installez Zephyr TV : à son démarrage, il reprend de Piume les paramètres, les utilisateurs, ce que vous avez regardé et Trakt. Ensuite, définissez-le comme Accueil et vous pouvez désinstaller Piume.</string>
+    <string name="zephyr_installed_intro">Zephyr TV est installé. Ouvrez-le : il reprend de Piume les paramètres, les utilisateurs, ce que vous avez regardé et Trakt, et vous aide à le définir comme Accueil. Ensuite, vous pouvez désinstaller Piume.</string>
+    <string name="zephyr_install">Installer Zephyr TV</string>
+    <string name="zephyr_open">Ouvrir Zephyr TV</string>
+    <string name="zephyr_later">Plus tard</string>
+    <string name="zephyr_downloading">Téléchargement de Zephyr TV…</string>
 </resources>

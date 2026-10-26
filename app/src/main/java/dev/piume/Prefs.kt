@@ -89,4 +89,5 @@ internal object K {
     const val UPD_TOLD = "upd_told"
     const val UPD_BETA = "upd_beta" // betas (pre-releases) are offered too
     const val SEEN_NOTES = "seen_notes"
+    const val ZEPHYR_TOLD = "zephyr_told" // when Zephyr TV's page last showed (-1: told it's installed; see Zephyr)
 }
