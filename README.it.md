@@ -8,6 +8,9 @@
   <em>Leggero come una piuma.</em> Una schermata Home minimale e senza pubblicità per Android TV e Google TV.
 </p>
 
+> [!IMPORTANT]
+> **Piume ora è [Zephyr TV](https://github.com/mccoy88f/Zephyr_TV).** Questo repository è archiviato e Piume non riceve più aggiornamenti. Piume 4.2.1 mostra una pagina per installare Zephyr TV, che al primo avvio prende da Piume impostazioni, utenti, cronologia e Trakt.
+
 > [!NOTE]
 > **Piume** è un fork di [**Plume Launcher**](https://github.com/aradhyas8/Plume_Launcher) di [aradhyas8](https://github.com/aradhyas8). Mantiene il design piccolo e veloce di Plume e aggiunge le traduzioni in italiano, spagnolo e francese, una sezione In evidenza TMDB con film e serie di tendenza (o altre liste TMDB, o la tua), i contenuti consigliati per app, i canali TV con loghi e programma in onda, la ricerca su TMDB e sui canali della TV, impostazioni raggruppate, un menu delle sorgenti TV, la modalità notte, il backup delle impostazioni e miglioramenti di leggibilità. Piume si installa accanto a Plume: ha un suo nome di pacchetto (`dev.piume`) e aggiornamenti propri. Vedi [Riconoscimenti](#riconoscimenti) per tutti coloro sul cui lavoro si basa.
 

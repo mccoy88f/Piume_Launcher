@@ -8,6 +8,9 @@
   <em>Light as feathers.</em> A minimal, ad-free home screen for Android TV and Google TV.
 </p>
 
+> [!IMPORTANT]
+> **Piume is now [Zephyr TV](https://github.com/mccoy88f/Zephyr_TV).** This repository is archived and Piume gets no more updates. Piume 4.2.1 shows a page to install Zephyr TV, which takes your settings, users, history and Trakt from Piume on its first start.
+
 > [!NOTE]
 > **Piume** (Italian for *feathers*) is a fork of [**Plume Launcher**](https://github.com/aradhyas8/Plume_Launcher) by [aradhyas8](https://github.com/aradhyas8). It keeps Plume's small, fast design and adds Italian, Spanish and French translations, a TMDB Spotlight of trending films and series (or other TMDB lists, or your own), recommendations per app, TV channels with logos and what's on, search across TMDB and the TV's channels, grouped settings, a TV inputs menu, night mode, settings backup and readability changes. Piume installs next to Plume: it has its own package name (`dev.piume`) and its own updates. See [Credits](#credits) for everyone whose work it builds on.
 
