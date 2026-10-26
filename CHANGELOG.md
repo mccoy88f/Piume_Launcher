@@ -15,6 +15,10 @@ Put changes that are not released under `## Unreleased`. Rename that heading to 
 
 ## Unreleased
 
+## 4.2.1
+
+- Piume is now **Zephyr TV**. This is the last version of Piume. Piume shows a page to install Zephyr TV.
+- When Zephyr TV starts for the first time, it takes from Piume your settings, your users, what you watched, your progress and your Trakt accounts. Then you can uninstall Piume.
 - When you select a film or series, its page opens at once and shows **Loading** until the information is there.
 - The page of a series tells you that you can hold OK on an episode to mark it.
 - Search has **Clear the filters**. The results of a search with words also show the filters.
